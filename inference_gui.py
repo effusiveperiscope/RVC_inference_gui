@@ -569,6 +569,7 @@ class InferenceGui(QMainWindow):
         self.recent_combo = QComboBox()
         self.rvc_layout.addWidget(self.recent_combo)
         self.recent_combo.activated.connect(self.recent_dir_dialog)
+        self.update_recent_combo()
 
         self.input_preview = AudioPreviewWidget()
         self.rvc_layout.addWidget(self.input_preview)
