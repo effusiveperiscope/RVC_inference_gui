@@ -1,3 +1,5 @@
+note - this is no longer being maintained. see fork of rvc under same acct
+
 # Setup
 1. `cd` into RVC directory (setup with Windows release zip)
 2. `runtime\python.exe -m pip install PyQt5`
