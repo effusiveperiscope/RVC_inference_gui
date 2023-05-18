@@ -631,6 +631,24 @@ class InferenceGui(QMainWindow):
         self.update_files(QFileDialog.getOpenFileNames(
             self, "Files to process", self.recent_dirs[index])[0])
 
+    def attempt_find_feature_files(self):
+        log_folder = (os.path.join("logs",self.model_state["weight_path"]
+            .removesuffix(".pth")))
+        search_candidates = []
+        if os.path.exists(log_folder):
+            search_candidates.append(log_folder)
+        # Search in logs folder
+        for s in search_candidates:
+            index = glob.glob(os.path.join(s,"*.index"))
+            if len(index):
+                self.feature_search_button.files = [index[0]]
+            feature_file = glob.glob(os.path.join(s,"*.npy"))
+            if len(feature_file):
+                self.feature_file_button.files = [feature_file[0]]
+            if len(index) and len(feature_file):
+                break
+        self.write_feature_file_map()
+
     def write_feature_file_map(self, userdata):
         if not "weight_path" in self.model_state:
             return
@@ -645,7 +663,6 @@ class InferenceGui(QMainWindow):
             feature_file_search_path = (str(Path(
                 self.feature_search_button.files[0]).parent)+
                 os.path.sep+"*.npy")
-            print(feature_file_search_path)
             feature_file_candidates = glob.glob(feature_file_search_path)
             if len(feature_file_candidates):
                 self.feature_file_button.files = [feature_file_candidates[0]]
@@ -831,10 +848,10 @@ class InferenceGui(QMainWindow):
             # [-5308 -1059 -5288 ...  -999 -5584  -422]
             # correct output is 
             # [197 192 193 ... 502 491 428]
-            print(
-                "npy: ", times[0], "s, f0: ", times[1], "s, infer: ",
-                times[2], "s", sep=""
-            )
+            #print(
+                #"npy: ", times[0], "s, f0: ", times[1], "s, infer: ",
+                #times[2], "s", sep=""
+            #)
             return "Success", (self.model_state["tgt_sr"], audio_opt)
         except:
             info = traceback.format_exc()
@@ -887,6 +904,7 @@ class InferenceGui(QMainWindow):
         self.model_state["vc"] = VC(tgt_sr, device, is_half)
         self.model_state["n_spk"] = n_spk
 
+        self.attempt_find_feature_files()
         self.load_feature_files()
 
 if __name__ == "__main__":
