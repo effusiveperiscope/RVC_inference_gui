@@ -6,6 +6,7 @@ import numpy as np
 import json
 import importlib.util
 import torch
+import glob
 from pathlib import Path
 from collections import deque
 from fairseq import checkpoint_utils
@@ -635,9 +636,19 @@ class InferenceGui(QMainWindow):
             return
         weight_path = self.model_state["weight_path"]
         self.feature_file_maps[weight_path] = {}
+        # Proposed feature: Allow updating of file_big_npy automatically
         self.feature_file_maps[weight_path][
             "file_index"] = (self.feature_search_button.files[0] if
             len(self.feature_search_button.files) else None)
+        if len(self.feature_search_button.files):
+            # Attempt to find feature file candidates
+            feature_file_search_path = (str(Path(
+                self.feature_search_button.files[0]).parent)+
+                os.path.sep+"*.npy")
+            print(feature_file_search_path)
+            feature_file_candidates = glob.glob(feature_file_search_path)
+            if len(feature_file_candidates):
+                self.feature_file_button.files = [feature_file_candidates[0]]
         self.feature_file_maps[weight_path][
             "file_big_npy"] = (self.feature_file_button.files[0] if
             len(self.feature_file_button.files) else None)
