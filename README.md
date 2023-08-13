@@ -1,4 +1,4 @@
-Deprecated. See https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI
+Deprecated. See https://github.com/effusiveperiscope/Retrieval-based-Voice-Conversion-WebUI
 # Setup
 1. `cd` into RVC directory (setup with Windows release zip)
 2. `runtime\python.exe -m pip install PyQt5`
